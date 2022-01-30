@@ -20,5 +20,12 @@
         <argument
             android:name="movieID"
             app:argType="integer" />
+        <action
+            android:id="@+id/action_detailsFragment_to_rateDialog"
+            app:destination="@id/rateDialog" />
     </fragment>
+    <dialog
+        android:id="@+id/rateDialog"
+        android:name="com.emad.movies.presentation.fragments.RateDialog"
+        android:label="RateDialog" />
 </navigation>
