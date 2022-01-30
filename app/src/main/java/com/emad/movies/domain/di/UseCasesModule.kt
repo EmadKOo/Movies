@@ -6,6 +6,8 @@ import com.emad.movies.data.usecases.getmoviereviews.GetMovieReviewsUsecaseImpl
 import com.emad.movies.data.usecases.moviedetails.MovieDetailsUsecase
 import com.emad.movies.data.usecases.moviedetails.MovieDetailsUsecaseImpl
 import com.emad.movies.data.usecases.popularmovies.*
+import com.emad.movies.data.usecases.requesttoken.RequestTokenUsecase
+import com.emad.movies.data.usecases.requesttoken.RequestTokenUsecaseImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -29,4 +31,10 @@ object UseCasesModule {
     @Provides
     fun provideMovieReviews(moviesRepository: MoviesRepository): GetMovieReviewsUsecase =
         GetMovieReviewsUsecaseImpl(moviesRepository)
+
+    @Singleton
+    @Provides
+    fun provideRequestingToken(moviesRepository: MoviesRepository): RequestTokenUsecase =
+        RequestTokenUsecaseImpl(moviesRepository)
+
 }

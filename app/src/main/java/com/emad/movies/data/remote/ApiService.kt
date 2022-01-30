@@ -4,6 +4,7 @@ import com.emad.movies.BuildConfig
 import com.emad.movies.data.model.MovieDetails
 import com.emad.movies.data.model.MovieReviews
 import com.emad.movies.data.model.PopularMovies
+import com.emad.movies.data.model.Token
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -28,4 +29,7 @@ interface ApiService {
         @Query("api_key") api_key: String= BuildConfig.API_KEY,
         @Query("language") language: String = "en_Us",
         @Query("page") page: Int = 1): MovieReviews
+
+    @GET("authentication/token/new")
+    suspend fun requestNewToken(@Query("api_key") api_key: String= BuildConfig.API_KEY): Token
 }

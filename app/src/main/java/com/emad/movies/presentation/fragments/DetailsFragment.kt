@@ -45,6 +45,7 @@ class DetailsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         loadMovieDetails(args.movieID)
         loadMovieReviews(args.movieID)
+        requestNewToken()
     }
 
     private fun loadMovieDetails(movieID: Int) {
@@ -93,6 +94,25 @@ class DetailsFragment : Fragment() {
         }
     }
 
+    private fun requestNewToken(){
+        lifecycleScope.launchWhenStarted {
+           val job= movieViewModel.requestNewToken()
+            movieViewModel.requestTokenStateFlow.collectLatest {
+                when(it){
+                    is Resource.Error -> {
+                        Log.d(TAG, "requestNewToken: ERROR " + it.data)
+                    }
+                    is Resource.Loading -> {
+                        Log.d(TAG, "requestNewToken: Loading")
+                    }
+                    is Resource.Success -> {
+                        Log.d(TAG, "requestNewToken: SUCCESS " + it.data)
+                    }
+                }
+            }
+
+        }
+    }
     private fun bindingDetails(movieDetails: MovieDetails) {
         Picasso.get().load("${BuildConfig.IMAGE_BASE}${movieDetails.poster_path}")
             .into(mBinding.movieImageView)

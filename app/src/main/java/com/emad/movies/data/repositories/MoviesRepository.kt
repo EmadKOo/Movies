@@ -20,5 +20,5 @@ class MoviesRepository @Inject constructor(private val apiService: ApiService) {
 
     suspend fun getMovieDetails(movie_id: Int)= apiService.getMovieDetails(movie_id = movie_id)
     suspend fun getMovieReviews(movie_id: Int)= apiService.getMovieReviews(movie_id = movie_id)
-
+    suspend fun requestNewToken()= apiService.requestNewToken()
 }

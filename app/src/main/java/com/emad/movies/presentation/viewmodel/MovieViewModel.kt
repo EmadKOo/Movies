@@ -7,10 +7,12 @@ import androidx.paging.PagingData
 import com.emad.movies.data.model.MovieDetails
 import com.emad.movies.data.model.MovieReviews
 import com.emad.movies.data.model.PopularMovies
+import com.emad.movies.data.model.Token
 import com.emad.movies.data.repositories.MoviesRepository
 import com.emad.movies.data.usecases.getmoviereviews.GetMovieReviewsUsecase
 import com.emad.movies.data.usecases.moviedetails.MovieDetailsUsecase
 import com.emad.movies.data.usecases.popularmovies.PopularMoviesUseCase
+import com.emad.movies.data.usecases.requesttoken.RequestTokenUsecase
 import com.emad.movies.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
@@ -24,13 +26,17 @@ import javax.inject.Inject
 class MovieViewModel @Inject constructor(
     private val popularMoviesUseCase: PopularMoviesUseCase,
     private val movieDetailsUsecase: MovieDetailsUsecase,
-    private val getMovieReviewsUsecase: GetMovieReviewsUsecase
+    private val getMovieReviewsUsecase: GetMovieReviewsUsecase,
+    private val requestTokenUsecase: RequestTokenUsecase
 ) : ViewModel() {
     private val _movieDetailsStateFlow = MutableStateFlow<Resource<MovieDetails>>(Resource.Init())
     val movieDetailsStateFlow: StateFlow<Resource<MovieDetails>> = _movieDetailsStateFlow
 
     private val _getMovieReviewsStateFlow= MutableStateFlow<Resource<MovieReviews>>(Resource.Init())
     val getMovieReviewsStateFlow: StateFlow<Resource<MovieReviews>> = _getMovieReviewsStateFlow
+
+    private val _requestTokenStateFlow = MutableStateFlow<Resource<Token>>(Resource.Init())
+    val requestTokenStateFlow: StateFlow<Resource<Token>> = _requestTokenStateFlow
 
     val moviesFlow = popularMoviesUseCase.invoke()
 
@@ -49,6 +55,15 @@ class MovieViewModel @Inject constructor(
             _getMovieReviewsStateFlow.emit(Resource.Success(getMovieReviewsUsecase.invoke(movieID)))
         }catch (ex: Exception){
             _getMovieReviewsStateFlow.emit(Resource.Error(ex.localizedMessage))
+        }
+    }
+
+    fun requestNewToken()= viewModelScope.launch {
+        try {
+            _requestTokenStateFlow.emit(Resource.Loading())
+            _requestTokenStateFlow.emit(Resource.Success(requestTokenUsecase.invoke()))
+        }catch (ex: Exception){
+            _requestTokenStateFlow.emit(Resource.Error(ex.localizedMessage))
         }
     }
 }
