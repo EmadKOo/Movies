@@ -12,10 +12,13 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI.setupActionBarWithNavController
+import com.emad.movies.BuildConfig
 import com.emad.movies.R
+import com.emad.movies.data.model.MovieDetails
 import com.emad.movies.databinding.FragmentDetailsBinding
 import com.emad.movies.presentation.viewmodel.MovieViewModel
 import com.emad.movies.utils.Resource
+import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 
@@ -50,11 +53,19 @@ class DetailsFragment : Fragment() {
                         Log.d(TAG, "loadMovieDetails: Loading ")
                     }
                     is Resource.Success -> {
-                        Log.d(TAG, "loadMovieDetails: Success " + it.data?.adult)
+                        bindingDetails(it.data!!)
                     }
                 }
             }
         }
+    }
+
+    private fun bindingDetails(movieDetails: MovieDetails){
+        Picasso.get().load("${BuildConfig.IMAGE_BASE}${movieDetails.poster_path}").into(mBinding.movieImageView)
+        mBinding.movieDescription.setText(movieDetails.overview)
+        mBinding.popularityVotes.setText(movieDetails.popularity.toString())
+        mBinding.movieVotes.setText(movieDetails.vote_count.toString())
+        mBinding.movieReleaseDate.setText(movieDetails.release_date)
     }
 
     companion object{
