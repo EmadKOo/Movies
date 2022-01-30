@@ -9,14 +9,18 @@ import androidx.recyclerview.widget.RecyclerView
 import com.emad.movies.BuildConfig
 import com.emad.movies.data.model.PopularMovies
 import com.emad.movies.databinding.MovieItemBinding
+import com.emad.movies.domain.listeners.OnMovieSelected
 import com.squareup.picasso.Picasso
 
-class MovieAdapter: PagingDataAdapter<PopularMovies.Result , MovieAdapter.MyViewHolder>(DIFFUTIL) {
+class MovieAdapter(private val onMovieSelected: OnMovieSelected): PagingDataAdapter<PopularMovies.Result , MovieAdapter.MyViewHolder>(DIFFUTIL) {
 
     inner class MyViewHolder(private val mBinding: MovieItemBinding): RecyclerView.ViewHolder(mBinding.root){
         fun bind(movie: PopularMovies.Result){
             Picasso.get().load("${BuildConfig.IMAGE_BASE}${movie.poster_path}").into(mBinding.movieBosterIV)
             mBinding.movieNameTV.setText(movie.title)
+            mBinding.movieViewHolder.setOnClickListener {
+                onMovieSelected.movieSelected(movie)
+            }
         }
     }
 
