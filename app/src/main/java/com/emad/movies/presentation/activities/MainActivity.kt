@@ -2,6 +2,7 @@ package com.emad.movies.presentation.activities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.ActionBar
 import com.emad.movies.R
 import dagger.hilt.android.AndroidEntryPoint
 

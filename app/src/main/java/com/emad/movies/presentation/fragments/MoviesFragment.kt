@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.emad.movies.R
 import com.emad.movies.data.model.PopularMovies
 import com.emad.movies.databinding.FragmentMoviesBinding
@@ -49,6 +50,6 @@ class MoviesFragment : Fragment(), OnMovieSelected {
     }
 
     override fun movieSelected(movie: PopularMovies.Result) {
-
+        findNavController().navigate(MoviesFragmentDirections.actionMoviesFragmentToDetailsFragment(movie.id))
     }
 }

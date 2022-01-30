@@ -17,4 +17,6 @@ class MoviesRepository @Inject constructor(private val apiService: ApiService) {
         ),
         pagingSourceFactory = {MoviePagingSource(apiService)}
     ).flow
+
+    suspend fun getMovieDetails(movie_id: Int)= apiService.getMovieDetails(movie_id = movie_id)
 }
