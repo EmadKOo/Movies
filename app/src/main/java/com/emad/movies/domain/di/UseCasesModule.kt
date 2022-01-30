@@ -1,6 +1,8 @@
 package com.emad.movies.domain.di
 
 import com.emad.movies.data.repositories.MoviesRepository
+import com.emad.movies.data.usecases.getmoviereviews.GetMovieReviewsUsecase
+import com.emad.movies.data.usecases.getmoviereviews.GetMovieReviewsUsecaseImpl
 import com.emad.movies.data.usecases.moviedetails.MovieDetailsUsecase
 import com.emad.movies.data.usecases.moviedetails.MovieDetailsUsecaseImpl
 import com.emad.movies.data.usecases.popularmovies.*
@@ -23,4 +25,8 @@ object UseCasesModule {
     fun provideMovieDetails(moviesRepository: MoviesRepository): MovieDetailsUsecase =
         MovieDetailsUsecaseImpl(moviesRepository)
 
+    @Singleton
+    @Provides
+    fun provideMovieReviews(moviesRepository: MoviesRepository): GetMovieReviewsUsecase =
+        GetMovieReviewsUsecaseImpl(moviesRepository)
 }

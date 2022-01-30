@@ -39,6 +39,7 @@ class DetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         loadMovieDetails(args.movieID)
+        loadMovieReviews(args.movieID)
     }
 
     private fun loadMovieDetails(movieID: Int){
@@ -59,12 +60,30 @@ class DetailsFragment : Fragment() {
             }
         }
     }
+    private fun loadMovieReviews(movieID: Int){
+        lifecycleScope.launchWhenStarted {
+            movieViewModel.getMovieReviews(movieID)
+            movieViewModel.getMovieReviewsStateFlow.collectLatest {
+                when(it){
+                    is Resource.Error -> {
+                        Log.d(TAG, "loadMovieReviews: ERROR " + it.data)
+                    }
+                    is Resource.Loading -> {
+                        Log.d(TAG, "loadMovieReviews: Loading")
+                    }
+                    is Resource.Success -> {
+                        Log.d(TAG, "loadMovieReviews: SUCCESS " + it.data)
+                    }
+                }
+            }
+        }
+    }
 
     private fun bindingDetails(movieDetails: MovieDetails){
         Picasso.get().load("${BuildConfig.IMAGE_BASE}${movieDetails.poster_path}").into(mBinding.movieImageView)
         mBinding.movieDescription.setText(movieDetails.overview)
         mBinding.popularityVotes.setText(movieDetails.popularity.toString())
-        mBinding.movieVotes.setText(movieDetails.vote_count.toString())
+        mBinding.movieVotes.setText(movieDetails.vote_average.toString())
         mBinding.movieReleaseDate.setText(movieDetails.release_date)
     }
 

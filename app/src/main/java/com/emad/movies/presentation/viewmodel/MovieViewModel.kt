@@ -5,8 +5,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import com.emad.movies.data.model.MovieDetails
+import com.emad.movies.data.model.MovieReviews
 import com.emad.movies.data.model.PopularMovies
 import com.emad.movies.data.repositories.MoviesRepository
+import com.emad.movies.data.usecases.getmoviereviews.GetMovieReviewsUsecase
 import com.emad.movies.data.usecases.moviedetails.MovieDetailsUsecase
 import com.emad.movies.data.usecases.popularmovies.PopularMoviesUseCase
 import com.emad.movies.utils.Resource
@@ -19,18 +21,34 @@ import java.lang.Exception
 import javax.inject.Inject
 
 @HiltViewModel
-class MovieViewModel @Inject constructor(private val popularMoviesUseCase: PopularMoviesUseCase, private val movieDetailsUsecase: MovieDetailsUsecase): ViewModel() {
+class MovieViewModel @Inject constructor(
+    private val popularMoviesUseCase: PopularMoviesUseCase,
+    private val movieDetailsUsecase: MovieDetailsUsecase,
+    private val getMovieReviewsUsecase: GetMovieReviewsUsecase
+) : ViewModel() {
     private val _movieDetailsStateFlow = MutableStateFlow<Resource<MovieDetails>>(Resource.Init())
     val movieDetailsStateFlow: StateFlow<Resource<MovieDetails>> = _movieDetailsStateFlow
 
-    val moviesFlow= popularMoviesUseCase.invoke()
+    private val _getMovieReviewsStateFlow= MutableStateFlow<Resource<MovieReviews>>(Resource.Init())
+    val getMovieReviewsStateFlow: StateFlow<Resource<MovieReviews>> = _getMovieReviewsStateFlow
 
-    fun getMovieDetails(movieID: Int)= viewModelScope.launch{
+    val moviesFlow = popularMoviesUseCase.invoke()
+
+    fun getMovieDetails(movieID: Int) = viewModelScope.launch {
         try {
             _movieDetailsStateFlow.emit(Resource.Loading())
             _movieDetailsStateFlow.emit(Resource.Success(movieDetailsUsecase.invoke(movieID)))
-        }catch (ex: Exception){
+        } catch (ex: Exception) {
             _movieDetailsStateFlow.emit(Resource.Error(ex.localizedMessage))
+        }
+    }
+
+    fun getMovieReviews(movieID: Int)= viewModelScope.launch {
+        try {
+            _getMovieReviewsStateFlow.emit(Resource.Loading())
+            _getMovieReviewsStateFlow.emit(Resource.Success(getMovieReviewsUsecase.invoke(movieID)))
+        }catch (ex: Exception){
+            _getMovieReviewsStateFlow.emit(Resource.Error(ex.localizedMessage))
         }
     }
 }
