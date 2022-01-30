@@ -1,5 +1,6 @@
 package com.emad.movies.presentation.fragments
 
+import android.opengl.Visibility
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -16,23 +17,27 @@ import com.emad.movies.BuildConfig
 import com.emad.movies.R
 import com.emad.movies.data.model.MovieDetails
 import com.emad.movies.databinding.FragmentDetailsBinding
+import com.emad.movies.presentation.adapters.ReviewsAdapter
 import com.emad.movies.presentation.viewmodel.MovieViewModel
 import com.emad.movies.utils.Resource
 import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class DetailsFragment : Fragment() {
     lateinit var mBinding: FragmentDetailsBinding
     val movieViewModel: MovieViewModel by viewModels()
     val args: DetailsFragmentArgs by navArgs()
+    @Inject
+    lateinit var adapter: ReviewsAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
-        mBinding= FragmentDetailsBinding.inflate(inflater, container, false)
+        mBinding = FragmentDetailsBinding.inflate(inflater, container, false)
         return mBinding.root
     }
 
@@ -42,11 +47,11 @@ class DetailsFragment : Fragment() {
         loadMovieReviews(args.movieID)
     }
 
-    private fun loadMovieDetails(movieID: Int){
+    private fun loadMovieDetails(movieID: Int) {
         lifecycleScope.launchWhenStarted {
             movieViewModel.getMovieDetails(movieID)
             movieViewModel.movieDetailsStateFlow.collectLatest {
-                when(it){
+                when (it) {
                     is Resource.Error -> {
                         Log.d(TAG, "loadMovieDetails: ERROR " + it.data)
                     }
@@ -60,11 +65,12 @@ class DetailsFragment : Fragment() {
             }
         }
     }
-    private fun loadMovieReviews(movieID: Int){
+
+    private fun loadMovieReviews(movieID: Int) {
         lifecycleScope.launchWhenStarted {
             movieViewModel.getMovieReviews(movieID)
             movieViewModel.getMovieReviewsStateFlow.collectLatest {
-                when(it){
+                when (it) {
                     is Resource.Error -> {
                         Log.d(TAG, "loadMovieReviews: ERROR " + it.data)
                     }
@@ -73,21 +79,30 @@ class DetailsFragment : Fragment() {
                     }
                     is Resource.Success -> {
                         Log.d(TAG, "loadMovieReviews: SUCCESS " + it.data)
+                        if (it.data?.results?.size!!>0) {
+                            mBinding.reviewsRecyclerView.adapter = adapter
+                            mBinding.reviewsRecyclerView.visibility= View.VISIBLE
+                            adapter.submitList(it.data!!.results)
+                        }else{
+                            Log.d(TAG, "loadMovieReviews: ELSES ")
+                            mBinding.reviewsTV.setText(getString(R.string.noReviews))
+                        }
                     }
                 }
             }
         }
     }
 
-    private fun bindingDetails(movieDetails: MovieDetails){
-        Picasso.get().load("${BuildConfig.IMAGE_BASE}${movieDetails.poster_path}").into(mBinding.movieImageView)
+    private fun bindingDetails(movieDetails: MovieDetails) {
+        Picasso.get().load("${BuildConfig.IMAGE_BASE}${movieDetails.poster_path}")
+            .into(mBinding.movieImageView)
         mBinding.movieDescription.setText(movieDetails.overview)
         mBinding.popularityVotes.setText(movieDetails.popularity.toString())
         mBinding.movieVotes.setText(movieDetails.vote_average.toString())
         mBinding.movieReleaseDate.setText(movieDetails.release_date)
     }
 
-    companion object{
+    companion object {
         private const val TAG = "DetailsFragment"
     }
 }
