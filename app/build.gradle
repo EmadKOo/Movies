@@ -20,6 +20,7 @@ android {
         buildConfigField "String", "BASE_URL",BASE_URL
         buildConfigField "String", "IMAGE_BASE",IMAGE_BASE
         buildConfigField "String", "API_KEY",API_KEY
+        buildConfigField "String", "SESSION_ID",SESSION_ID
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 

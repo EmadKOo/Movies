@@ -1,6 +1,5 @@
 package com.emad.movies.presentation.fragments
 
-import android.opengl.Visibility
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -9,13 +8,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.NavigationUI.setupActionBarWithNavController
 import com.emad.movies.BuildConfig
 import com.emad.movies.R
 import com.emad.movies.data.model.MovieDetails
+import com.emad.movies.data.model.RequestRate
 import com.emad.movies.databinding.FragmentDetailsBinding
 import com.emad.movies.presentation.adapters.ReviewsAdapter
 import com.emad.movies.presentation.viewmodel.MovieViewModel
@@ -24,6 +21,12 @@ import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
+import java.net.URL
+
+import java.io.InputStream
+
+
+
 
 @AndroidEntryPoint
 class DetailsFragment : Fragment() {
@@ -45,7 +48,7 @@ class DetailsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         loadMovieDetails(args.movieID)
         loadMovieReviews(args.movieID)
-        requestNewToken()
+        requestMovieRate(args.movieID, BuildConfig.SESSION_ID, RequestRate(8.5))
     }
 
     private fun loadMovieDetails(movieID: Int) {
@@ -107,10 +110,42 @@ class DetailsFragment : Fragment() {
                     }
                     is Resource.Success -> {
                         Log.d(TAG, "requestNewToken: SUCCESS " + it.data)
+                        activateToken("https://www.themoviedb.org/authenticate/${it.data?.request_token}")
                     }
                 }
             }
 
+        }
+    }
+
+    fun activateToken(url: String?): InputStream? {
+        var myFileURL: URL? = null
+        var inputStream: InputStream? = null
+        try {
+            myFileURL = URL(url)
+            inputStream = myFileURL.openStream()
+        } catch (e: Exception) {
+            println(e.message)
+        }
+        return inputStream
+    }
+
+    private fun requestMovieRate(movie_id: Int, session_id: String, requestRate: RequestRate){
+        lifecycleScope.launchWhenStarted {
+            movieViewModel.addingMovieRate(movie_id, session_id, requestRate)
+            movieViewModel.requestRateStateFlow.collectLatest {
+                when(it){
+                    is Resource.Error -> {
+                        Log.d(TAG, "requestMovieRate: ERROR " + it.data)
+                    }
+                    is Resource.Loading -> {
+                        Log.d(TAG, "requestMovieRate: Loading")
+                    }
+                    is Resource.Success -> {
+                        Log.d(TAG, "requestMovieRate: Success " + it.data)
+                    }
+                }
+            }
         }
     }
     private fun bindingDetails(movieDetails: MovieDetails) {

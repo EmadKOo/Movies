@@ -4,14 +4,12 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
-import com.emad.movies.data.model.MovieDetails
-import com.emad.movies.data.model.MovieReviews
-import com.emad.movies.data.model.PopularMovies
-import com.emad.movies.data.model.Token
+import com.emad.movies.data.model.*
 import com.emad.movies.data.repositories.MoviesRepository
 import com.emad.movies.data.usecases.getmoviereviews.GetMovieReviewsUsecase
 import com.emad.movies.data.usecases.moviedetails.MovieDetailsUsecase
 import com.emad.movies.data.usecases.popularmovies.PopularMoviesUseCase
+import com.emad.movies.data.usecases.requestrate.RequestRateUsecase
 import com.emad.movies.data.usecases.requesttoken.RequestTokenUsecase
 import com.emad.movies.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -27,7 +25,8 @@ class MovieViewModel @Inject constructor(
     private val popularMoviesUseCase: PopularMoviesUseCase,
     private val movieDetailsUsecase: MovieDetailsUsecase,
     private val getMovieReviewsUsecase: GetMovieReviewsUsecase,
-    private val requestTokenUsecase: RequestTokenUsecase
+    private val requestTokenUsecase: RequestTokenUsecase,
+    private val requestRateUsecase: RequestRateUsecase,
 ) : ViewModel() {
     private val _movieDetailsStateFlow = MutableStateFlow<Resource<MovieDetails>>(Resource.Init())
     val movieDetailsStateFlow: StateFlow<Resource<MovieDetails>> = _movieDetailsStateFlow
@@ -37,6 +36,9 @@ class MovieViewModel @Inject constructor(
 
     private val _requestTokenStateFlow = MutableStateFlow<Resource<Token>>(Resource.Init())
     val requestTokenStateFlow: StateFlow<Resource<Token>> = _requestTokenStateFlow
+
+    private val _requestRateStateFlow= MutableStateFlow<Resource<RateResponse>>(Resource.Init())
+    val requestRateStateFlow: StateFlow<Resource<RateResponse>> = _requestRateStateFlow
 
     val moviesFlow = popularMoviesUseCase.invoke()
 
@@ -65,5 +67,22 @@ class MovieViewModel @Inject constructor(
         }catch (ex: Exception){
             _requestTokenStateFlow.emit(Resource.Error(ex.localizedMessage))
         }
+    }
+
+    fun addingMovieRate(movie_id: Int, session_id: String, requestRate: RequestRate)= viewModelScope.launch {
+        try {
+            _requestRateStateFlow.emit(Resource.Loading())
+            _requestRateStateFlow.emit(Resource.Success(requestRateUsecase.invoke(movie_id, session_id, requestRate)))
+        }catch (ex: Exception){
+            Log.d(TAG, "addingMovieRate: "+ ex)
+            Log.d(TAG, "addingMovieRate: "+ ex.cause)
+            Log.d(TAG, "addingMovieRate: "+ ex.message)
+            Log.d(TAG, "addingMovieRate: "+ ex.localizedMessage)
+            Log.d(TAG, "addingMovieRate: "+ ex.stackTrace)
+            _requestRateStateFlow.emit(Resource.Error(ex.localizedMessage))
+        }
+    }
+    companion object{
+        private const val TAG = "MovieViewModel"
     }
 }
