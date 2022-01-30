@@ -7,5 +7,5 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class PopularMoviesUseCaseImpl @Inject constructor(private val moviesRepository: MoviesRepository): PopularMoviesUseCase {
-    override suspend fun invoke(): Flow<PagingData<PopularMovies.Result>> = moviesRepository.getPopularMovies()
+    override  fun invoke(): Flow<PagingData<PopularMovies.Result>> = moviesRepository.getPopularMovies()
 }
