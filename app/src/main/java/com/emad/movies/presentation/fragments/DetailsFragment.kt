@@ -26,9 +26,6 @@ import java.net.URL
 
 import java.io.InputStream
 
-
-
-
 @AndroidEntryPoint
 class DetailsFragment : Fragment() {
     lateinit var mBinding: FragmentDetailsBinding
@@ -47,11 +44,20 @@ class DetailsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        handleToolbar()
         loadMovieDetails(args.movieID)
         loadMovieReviews(args.movieID)
-        requestMovieRate(args.movieID, BuildConfig.SESSION_ID, RequestRate(8.5))
     }
 
+    private fun handleToolbar(){
+        mBinding.backButtonDetails.setOnClickListener {
+            findNavController().popBackStack()
+        }
+
+        mBinding.rateImageView.setOnClickListener {
+            findNavController().navigate(DetailsFragmentDirections.actionDetailsFragmentToRateDialog(args.movieID))
+        }
+    }
     private fun loadMovieDetails(movieID: Int) {
         lifecycleScope.launchWhenStarted {
             movieViewModel.getMovieDetails(movieID)
@@ -131,24 +137,6 @@ class DetailsFragment : Fragment() {
         return inputStream
     }
 
-    private fun requestMovieRate(movie_id: Int, session_id: String, requestRate: RequestRate){
-        lifecycleScope.launchWhenStarted {
-            movieViewModel.addingMovieRate(movie_id, session_id, requestRate)
-            movieViewModel.requestRateStateFlow.collectLatest {
-                when(it){
-                    is Resource.Error -> {
-                        Log.d(TAG, "requestMovieRate: ERROR " + it.data)
-                    }
-                    is Resource.Loading -> {
-                        Log.d(TAG, "requestMovieRate: Loading")
-                    }
-                    is Resource.Success -> {
-                        Log.d(TAG, "requestMovieRate: Success " + it.data)
-                    }
-                }
-            }
-        }
-    }
     private fun bindingDetails(movieDetails: MovieDetails) {
         Picasso.get().load("${BuildConfig.IMAGE_BASE}${movieDetails.poster_path}")
             .into(mBinding.movieImageView)
@@ -156,6 +144,7 @@ class DetailsFragment : Fragment() {
         mBinding.popularityVotes.setText(movieDetails.popularity.toString())
         mBinding.movieVotes.setText(movieDetails.vote_average.toString())
         mBinding.movieReleaseDate.setText(movieDetails.release_date)
+        mBinding.movieNameTV.setText(movieDetails.original_title)
     }
 
     companion object {

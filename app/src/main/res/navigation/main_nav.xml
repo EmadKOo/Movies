@@ -27,5 +27,9 @@
     <dialog
         android:id="@+id/rateDialog"
         android:name="com.emad.movies.presentation.fragments.RateDialog"
-        android:label="RateDialog" />
+        android:label="RateDialog" >
+        <argument
+            android:name="movieID"
+            app:argType="integer" />
+    </dialog>
 </navigation>
