@@ -12,4 +12,5 @@
     <string name="areYouSureYouWantToFav">Are you sure you want to add this movie to favourites?</string>
     <string name="delete">Delete</string>
     <string name="add">Add</string>
+    <string name="favourites">Favourites</string>
 </resources>

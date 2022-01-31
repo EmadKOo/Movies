@@ -12,7 +12,7 @@ interface FavouritesDao {
     suspend fun addFavourite(favouriteMovie: FavouriteEntity): Long
 
     @Query("select * from favouritestable")
-    suspend fun getFavourites(): FavouriteEntity
+    suspend fun getFavourites(): List<FavouriteEntity>
 
     @Query("DELETE from favouritestable")
     suspend fun clearDB()

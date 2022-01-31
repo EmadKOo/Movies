@@ -27,4 +27,5 @@ class MoviesRepository @Inject constructor(private val apiService: ApiService, p
     suspend fun addRate(movie_id: Int, session_id: String, requestRate: RequestRate)= apiService.postRate(movie_id = movie_id, session_id = session_id, requestRate = requestRate)
 
     suspend fun addFavourite(favouriteEntity: FavouriteEntity)= favouritesDao.addFavourite(favouriteEntity)
+    suspend fun getAllFavourites()= favouritesDao.getFavourites()
 }

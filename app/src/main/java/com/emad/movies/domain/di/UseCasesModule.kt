@@ -3,6 +3,8 @@ package com.emad.movies.domain.di
 import com.emad.movies.data.repositories.MoviesRepository
 import com.emad.movies.data.usecases.addfavourite.AddFavouriteUsecase
 import com.emad.movies.data.usecases.addfavourite.AddFavouriteUsecaseImpl
+import com.emad.movies.data.usecases.getallfavs.GetAllFavouritesUsecase
+import com.emad.movies.data.usecases.getallfavs.GetAllFavouritesUsecaseImpl
 import com.emad.movies.data.usecases.getmoviereviews.GetMovieReviewsUsecase
 import com.emad.movies.data.usecases.getmoviereviews.GetMovieReviewsUsecaseImpl
 import com.emad.movies.data.usecases.moviedetails.MovieDetailsUsecase
@@ -51,4 +53,8 @@ object UseCasesModule {
     fun provideAddingFavourite(moviesRepository: MoviesRepository): AddFavouriteUsecase =
         AddFavouriteUsecaseImpl(moviesRepository)
 
+    @Singleton
+    @Provides
+    fun provideGetAllFavourites(moviesRepository: MoviesRepository): GetAllFavouritesUsecase =
+        GetAllFavouritesUsecaseImpl(moviesRepository)
 }

@@ -8,6 +8,7 @@ import com.emad.movies.data.local.entities.FavouriteEntity
 import com.emad.movies.data.model.*
 import com.emad.movies.data.repositories.MoviesRepository
 import com.emad.movies.data.usecases.addfavourite.AddFavouriteUsecase
+import com.emad.movies.data.usecases.getallfavs.GetAllFavouritesUsecase
 import com.emad.movies.data.usecases.getmoviereviews.GetMovieReviewsUsecase
 import com.emad.movies.data.usecases.moviedetails.MovieDetailsUsecase
 import com.emad.movies.data.usecases.popularmovies.PopularMoviesUseCase
@@ -29,7 +30,8 @@ class MovieViewModel @Inject constructor(
     private val getMovieReviewsUsecase: GetMovieReviewsUsecase,
     private val requestTokenUsecase: RequestTokenUsecase,
     private val requestRateUsecase: RequestRateUsecase,
-    private val addFavouriteUsecase: AddFavouriteUsecase
+    private val addFavouriteUsecase: AddFavouriteUsecase,
+    private val getAllFavouritesUsecase: GetAllFavouritesUsecase
 ) : ViewModel() {
     private val _movieDetailsStateFlow = MutableStateFlow<Resource<MovieDetails>>(Resource.Init())
     val movieDetailsStateFlow: StateFlow<Resource<MovieDetails>> = _movieDetailsStateFlow
@@ -45,6 +47,9 @@ class MovieViewModel @Inject constructor(
 
     private val _addFavouriteStateFlow= MutableStateFlow<Resource<Long>>(Resource.Init())
     val addFavouriteStateFlow: StateFlow<Resource<Long>> = _addFavouriteStateFlow
+
+    private val _getAllFavouritesStateFlow = MutableStateFlow<Resource<ArrayList<FavouriteEntity>>>(Resource.Init())
+    val getAllFavouritesStateFlow: StateFlow<Resource<ArrayList<FavouriteEntity>>> = _getAllFavouritesStateFlow
 
     val moviesFlow = popularMoviesUseCase.invoke()
 
@@ -90,6 +95,15 @@ class MovieViewModel @Inject constructor(
             _addFavouriteStateFlow.emit(Resource.Success(addFavouriteUsecase.invoke(favouriteEntity)))
         }catch (ex: Exception){
             _addFavouriteStateFlow.emit(Resource.Error(ex.localizedMessage))
+        }
+    }
+
+    fun getAllFavourites()= viewModelScope.launch {
+        try {
+            _getAllFavouritesStateFlow.emit(Resource.Loading())
+            _getAllFavouritesStateFlow.emit(Resource.Success(getAllFavouritesUsecase.invoke()))
+        }catch (ex: Exception){
+            _getAllFavouritesStateFlow.emit(Resource.Error(ex.localizedMessage))
         }
     }
     companion object{
