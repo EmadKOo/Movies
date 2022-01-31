@@ -1,5 +1,7 @@
 package com.emad.movies.presentation.fragments
 
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -10,6 +12,10 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.emad.movies.BuildConfig
 import com.emad.movies.R
 import com.emad.movies.data.model.MovieDetails
@@ -172,8 +178,22 @@ class DetailsFragment : Fragment() {
     }
 
     private fun bindingDetails(movieDetails: MovieDetails) {
-        Picasso.get().load("${BuildConfig.IMAGE_BASE}${movieDetails.poster_path}")
-            .into(mBinding.movieImageView)
+//        Picasso.get().load("${BuildConfig.IMAGE_BASE}${movieDetails.poster_path}")
+//            .into(mBinding.movieImageView)
+        Glide.with(requireContext())
+            .asBitmap()
+            .load("${BuildConfig.IMAGE_BASE}${movieDetails.poster_path}")
+            .centerCrop()
+            .fitCenter()
+            .diskCacheStrategy(DiskCacheStrategy.ALL)
+            .into(object : CustomTarget<Bitmap>(){
+                override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                    mBinding.movieImageView.setImageBitmap(resource)
+                }
+                override fun onLoadCleared(placeholder: Drawable?) {
+                    mBinding.movieImageView.setImageDrawable(placeholder)
+                }
+            })
         mBinding.movieDescription.setText(movieDetails.overview)
         mBinding.popularityVotes.setText(movieDetails.popularity.toString())
         mBinding.movieVotes.setText(movieDetails.vote_average.toString())

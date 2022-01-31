@@ -23,7 +23,12 @@ import kotlinx.coroutines.flow.collectLatest
 class MoviesFragment : Fragment(), OnMovieSelected {
     private lateinit var mBinding: FragmentMoviesBinding
     val moviesViewModel: MovieViewModel by viewModels()
-    val adapter= MovieAdapter(this)
+    lateinit var adapter: MovieAdapter
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        adapter= MovieAdapter(this, requireContext())
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
