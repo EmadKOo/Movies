@@ -3,6 +3,7 @@ package com.emad.movies.domain.di
 import android.app.Application
 import androidx.room.Room
 import com.emad.movies.data.local.dao.FavouritesDao
+import com.emad.movies.data.local.dao.MovieDao
 import com.emad.movies.data.local.database.MovieDatabase
 import com.emad.movies.utils.Constants.Companion.MOVIE_DB
 import dagger.Module
@@ -27,5 +28,11 @@ object RoomModule {
     @Singleton
     fun providesFavouritesDao(db: MovieDatabase): FavouritesDao {
         return db.favouritesDao()
+    }
+
+    @Provides
+    @Singleton
+    fun providesMoviesDao(db: MovieDatabase): MovieDao {
+        return db.movieDao()
     }
 }

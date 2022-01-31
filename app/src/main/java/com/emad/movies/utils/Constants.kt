@@ -4,6 +4,7 @@ class Constants {
     companion object{
         const val  MOVIE_DB: String ="moviedb"
         const val  FAVOURITES_TABLE: String ="favouritestable"
+        const val  MOVIES_TABLE: String ="moviestable"
 
     }
 }
