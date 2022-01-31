@@ -58,6 +58,12 @@ class DetailsFragment : Fragment() {
             findNavController().navigate(DetailsFragmentDirections.actionDetailsFragmentToRateDialog(args.movieID))
         }
     }
+
+    private fun handleViews(){
+        mBinding.favIcon.setOnClickListener {
+            findNavController().navigate(DetailsFragmentDirections.actionDetailsFragmentToRateDialog(args.movieID))
+        }
+    }
     private fun loadMovieDetails(movieID: Int) {
         lifecycleScope.launchWhenStarted {
             movieViewModel.getMovieDetails(movieID)

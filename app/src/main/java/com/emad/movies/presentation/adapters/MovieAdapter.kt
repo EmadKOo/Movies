@@ -11,6 +11,7 @@ import com.emad.movies.data.model.PopularMovies
 import com.emad.movies.databinding.MovieItemBinding
 import com.emad.movies.domain.listeners.OnMovieSelected
 import com.squareup.picasso.Picasso
+import dagger.hilt.android.qualifiers.ApplicationContext
 
 class MovieAdapter(private val onMovieSelected: OnMovieSelected): PagingDataAdapter<PopularMovies.Result , MovieAdapter.MyViewHolder>(DIFFUTIL) {
 
