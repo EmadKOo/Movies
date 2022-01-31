@@ -85,18 +85,30 @@
 
             <TextView
                 android:id="@+id/movieDescription"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/_5sdp"
                 android:fontFamily="@font/cairo"
                 android:textColor="@color/black"
                 android:textSize="@dimen/_12sdp"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/favIcon"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/movieImageView"
                 tools:maxLines="3"
                 tools:text="@tools:sample/lorem/random" />
 
+            <ImageView
+                android:id="@+id/favIcon"
+                android:layout_width="@dimen/_30sdp"
+                android:layout_height="@dimen/_30sdp"
+                android:padding="@dimen/_5sdp"
+                android:layout_marginHorizontal="@dimen/_5sdp"
+                android:layout_marginVertical="@dimen/_5sdp"
+                android:src="@drawable/ic_baseline_favorite_border_24"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/movieImageView"
+
+                />
             <TextView
                 android:id="@+id/movieReleaseDate"
                 android:layout_width="wrap_content"
@@ -175,6 +187,15 @@
                 android:orientation="vertical"
                 app:layout_constraintTop_toBottomOf="@id/reviewsTV"/>
 
+            <ProgressBar
+                android:id="@+id/detailsProgressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@id/appBarLayout"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
