@@ -23,11 +23,22 @@
         <action
             android:id="@+id/action_detailsFragment_to_rateDialog"
             app:destination="@id/rateDialog" />
+        <action
+            android:id="@+id/action_detailsFragment_to_favouriteDialog"
+            app:destination="@id/favouriteDialog" />
     </fragment>
     <dialog
         android:id="@+id/rateDialog"
         android:name="com.emad.movies.presentation.fragments.RateDialog"
         android:label="RateDialog" >
+        <argument
+            android:name="movieID"
+            app:argType="integer" />
+    </dialog>
+    <dialog
+        android:id="@+id/favouriteDialog"
+        android:name="com.emad.movies.presentation.fragments.FavouriteDialog"
+        android:label="FavouriteDialog" >
         <argument
             android:name="movieID"
             app:argType="integer" />

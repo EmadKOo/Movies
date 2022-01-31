@@ -9,4 +9,6 @@
     <string name="cancel">Cancel</string>
     <string name="pleaseSelectValue">Please Select value</string>
     <string name="popularMovies">Popular Movies</string>
+    <string name="areYouSureYouWantToFav">Are you sure you want to add this movie to favourites?</string>
+    <string name="delete">Delete</string>
 </resources>
