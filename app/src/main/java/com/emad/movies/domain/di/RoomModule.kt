@@ -1,4 +1,4 @@
-package com.emad.movies.domain
+package com.emad.movies.domain.di
 
 import android.app.Application
 import androidx.room.Room

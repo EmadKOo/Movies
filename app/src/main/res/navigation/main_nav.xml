@@ -42,5 +42,10 @@
         <argument
             android:name="movieID"
             app:argType="integer" />
+        <argument
+            android:name="movieName"
+            app:argType="string" />
+        <argument android:name="movieImage"
+            app:argType="string" />
     </dialog>
 </navigation>

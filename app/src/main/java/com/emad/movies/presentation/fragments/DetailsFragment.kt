@@ -33,6 +33,7 @@ class DetailsFragment : Fragment() {
     val args: DetailsFragmentArgs by navArgs()
     @Inject
     lateinit var adapter: ReviewsAdapter
+    lateinit var movieDetail: MovieDetails
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,6 +46,7 @@ class DetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         handleToolbar()
+        handleViews()
         loadMovieDetails(args.movieID)
         loadMovieReviews(args.movieID)
     }
@@ -61,7 +63,7 @@ class DetailsFragment : Fragment() {
 
     private fun handleViews(){
         mBinding.favIcon.setOnClickListener {
-            findNavController().navigate(DetailsFragmentDirections.actionDetailsFragmentToRateDialog(args.movieID))
+            findNavController().navigate(DetailsFragmentDirections.actionDetailsFragmentToFavouriteDialog(args.movieID, movieDetail?.original_title, "${BuildConfig.IMAGE_BASE}${movieDetail.poster_path}"))
         }
     }
     private fun loadMovieDetails(movieID: Int) {
@@ -76,7 +78,8 @@ class DetailsFragment : Fragment() {
                         Log.d(TAG, "loadMovieDetails: Loading ")
                     }
                     is Resource.Success -> {
-                        bindingDetails(it.data!!)
+                        movieDetail= it.data!!
+                        bindingDetails(it.data)
                     }
                 }
             }
@@ -156,4 +159,5 @@ class DetailsFragment : Fragment() {
     companion object {
         private const val TAG = "DetailsFragment"
     }
+
 }

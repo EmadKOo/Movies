@@ -4,8 +4,10 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
+import com.emad.movies.data.local.entities.FavouriteEntity
 import com.emad.movies.data.model.*
 import com.emad.movies.data.repositories.MoviesRepository
+import com.emad.movies.data.usecases.addfavourite.AddFavouriteUsecase
 import com.emad.movies.data.usecases.getmoviereviews.GetMovieReviewsUsecase
 import com.emad.movies.data.usecases.moviedetails.MovieDetailsUsecase
 import com.emad.movies.data.usecases.popularmovies.PopularMoviesUseCase
@@ -27,6 +29,7 @@ class MovieViewModel @Inject constructor(
     private val getMovieReviewsUsecase: GetMovieReviewsUsecase,
     private val requestTokenUsecase: RequestTokenUsecase,
     private val requestRateUsecase: RequestRateUsecase,
+    private val addFavouriteUsecase: AddFavouriteUsecase
 ) : ViewModel() {
     private val _movieDetailsStateFlow = MutableStateFlow<Resource<MovieDetails>>(Resource.Init())
     val movieDetailsStateFlow: StateFlow<Resource<MovieDetails>> = _movieDetailsStateFlow
@@ -39,6 +42,9 @@ class MovieViewModel @Inject constructor(
 
     private val _requestRateStateFlow= MutableStateFlow<Resource<RateResponse>>(Resource.Init())
     val requestRateStateFlow: StateFlow<Resource<RateResponse>> = _requestRateStateFlow
+
+    private val _addFavouriteStateFlow= MutableStateFlow<Resource<Long>>(Resource.Init())
+    val addFavouriteStateFlow: StateFlow<Resource<Long>> = _addFavouriteStateFlow
 
     val moviesFlow = popularMoviesUseCase.invoke()
 
@@ -74,12 +80,16 @@ class MovieViewModel @Inject constructor(
             _requestRateStateFlow.emit(Resource.Loading())
             _requestRateStateFlow.emit(Resource.Success(requestRateUsecase.invoke(movie_id, session_id, requestRate)))
         }catch (ex: Exception){
-            Log.d(TAG, "addingMovieRate: "+ ex)
-            Log.d(TAG, "addingMovieRate: "+ ex.cause)
-            Log.d(TAG, "addingMovieRate: "+ ex.message)
-            Log.d(TAG, "addingMovieRate: "+ ex.localizedMessage)
-            Log.d(TAG, "addingMovieRate: "+ ex.stackTrace)
             _requestRateStateFlow.emit(Resource.Error(ex.localizedMessage))
+        }
+    }
+
+    fun addFavouriteMovie(favouriteEntity: FavouriteEntity)= viewModelScope.launch {
+        try {
+            _addFavouriteStateFlow.emit(Resource.Loading())
+            _addFavouriteStateFlow.emit(Resource.Success(addFavouriteUsecase.invoke(favouriteEntity)))
+        }catch (ex: Exception){
+            _addFavouriteStateFlow.emit(Resource.Error(ex.localizedMessage))
         }
     }
     companion object{
