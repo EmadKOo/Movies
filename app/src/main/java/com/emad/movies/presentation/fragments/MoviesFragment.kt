@@ -34,8 +34,8 @@ class MoviesFragment : Fragment(), OnMovieSelected {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mBinding.moviesRecyclerView.adapter= adapter
         loadPopularMovies()
+        handleViews()
     }
 
     private fun loadPopularMovies(){
@@ -45,6 +45,14 @@ class MoviesFragment : Fragment(), OnMovieSelected {
             }
         }
     }
+
+    private fun handleViews(){
+        mBinding.moviesRecyclerView.adapter= adapter
+        mBinding.favIcon.setOnClickListener {
+            findNavController().navigate(MoviesFragmentDirections.actionMoviesFragmentToFavouritesFragment())
+        }
+    }
+
     companion object{
         private const val TAG = "MoviesFragment"
     }
