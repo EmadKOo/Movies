@@ -8,6 +8,7 @@ import com.emad.movies.data.local.entities.FavouriteEntity
 import com.emad.movies.data.model.*
 import com.emad.movies.data.repositories.MoviesRepository
 import com.emad.movies.data.usecases.addfavourite.AddFavouriteUsecase
+import com.emad.movies.data.usecases.checkfav.CheckMovieUsecase
 import com.emad.movies.data.usecases.getallfavs.GetAllFavouritesUsecase
 import com.emad.movies.data.usecases.getmoviereviews.GetMovieReviewsUsecase
 import com.emad.movies.data.usecases.moviedetails.MovieDetailsUsecase
@@ -31,7 +32,8 @@ class MovieViewModel @Inject constructor(
     private val requestTokenUsecase: RequestTokenUsecase,
     private val requestRateUsecase: RequestRateUsecase,
     private val addFavouriteUsecase: AddFavouriteUsecase,
-    private val getAllFavouritesUsecase: GetAllFavouritesUsecase
+    private val getAllFavouritesUsecase: GetAllFavouritesUsecase,
+    private val checkMovieUsecase: CheckMovieUsecase
 ) : ViewModel() {
     private val _movieDetailsStateFlow = MutableStateFlow<Resource<MovieDetails>>(Resource.Init())
     val movieDetailsStateFlow: StateFlow<Resource<MovieDetails>> = _movieDetailsStateFlow
@@ -50,6 +52,9 @@ class MovieViewModel @Inject constructor(
 
     private val _getAllFavouritesStateFlow = MutableStateFlow<Resource<ArrayList<FavouriteEntity>>>(Resource.Init())
     val getAllFavouritesStateFlow: StateFlow<Resource<ArrayList<FavouriteEntity>>> = _getAllFavouritesStateFlow
+
+    private val _checkIfMovieIsFavStateFlow = MutableStateFlow<Resource<Int>>(Resource.Init())
+    val checkIfMovieIsFavStateFlow: StateFlow<Resource<Int>> = _checkIfMovieIsFavStateFlow
 
     val moviesFlow = popularMoviesUseCase.invoke()
 
@@ -104,6 +109,15 @@ class MovieViewModel @Inject constructor(
             _getAllFavouritesStateFlow.emit(Resource.Success(getAllFavouritesUsecase.invoke()))
         }catch (ex: Exception){
             _getAllFavouritesStateFlow.emit(Resource.Error(ex.localizedMessage))
+        }
+    }
+
+    fun checkIfFav(movieID: Int)= viewModelScope.launch {
+        try {
+            _checkIfMovieIsFavStateFlow.emit(Resource.Loading())
+            _checkIfMovieIsFavStateFlow.emit(Resource.Success(checkMovieUsecase.invoke(movieID)))
+        }catch (ex: Exception){
+            _checkIfMovieIsFavStateFlow.emit(Resource.Error(ex.localizedMessage))
         }
     }
     companion object{

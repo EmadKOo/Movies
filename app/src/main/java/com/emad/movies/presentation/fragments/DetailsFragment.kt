@@ -51,6 +51,10 @@ class DetailsFragment : Fragment() {
         loadMovieReviews(args.movieID)
     }
 
+    override fun onResume() {
+        super.onResume()
+        checkIfFav(args.movieID)
+    }
     private fun handleToolbar(){
         mBinding.backButtonDetails.setOnClickListener {
             findNavController().popBackStack()
@@ -107,6 +111,27 @@ class DetailsFragment : Fragment() {
                             Log.d(TAG, "loadMovieReviews: ELSES ")
                             mBinding.reviewsTV.setText(getString(R.string.noReviews))
                         }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun checkIfFav(movieID: Int){
+        lifecycleScope.launchWhenStarted {
+            movieViewModel.checkIfFav(movieID)
+            movieViewModel.checkIfMovieIsFavStateFlow.collectLatest {
+                when(it){
+                    is Resource.Error -> {
+                        Log.d(TAG, "checkIfFav: ERROR " + it.data)
+                    }
+                    is Resource.Loading -> {
+                        Log.d(TAG, "checkIfFav: Loading")
+                    }
+                    is Resource.Success -> {
+                        Log.d(TAG, "checkIfFav:Success "+ it.data)
+                        if (it.data ==1)
+                            mBinding.favIcon.setImageResource(R.drawable.ic_baseline_favorite_24)
                     }
                 }
             }
