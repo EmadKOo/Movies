@@ -13,6 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import com.emad.movies.BuildConfig
 import com.emad.movies.R
+import com.emad.movies.data.enums.FavouriteStatus
 import com.emad.movies.data.local.entities.FavouriteEntity
 import com.emad.movies.data.model.RequestRate
 import com.emad.movies.presentation.viewmodel.MovieViewModel
@@ -32,12 +33,43 @@ class FavouriteDialog: DialogFragment() {
         dialog.cancel.setOnClickListener {
             dismiss()
         }
+        if (args.action == FavouriteStatus.FAVOURITE.ordinal)
+            dialog.dialogAskTV.setText(getString(R.string.areYouSureYouWantToFav))
+        else  if (args.action == FavouriteStatus.UN_FAVOURITE.ordinal){
+            dialog.dialogAskTV.setText(getString(R.string.areYouSureYouWantToUnFav))
+            dialog.add.setText(getString(R.string.delete))
+        }
+
         dialog.add.setOnClickListener {
-            addFavourite(args.movieID, args.movieName, args.movieImage)
+            if (args.action == FavouriteStatus.FAVOURITE.ordinal)
+                addFavourite(args.movieID, args.movieName, args.movieImage)
+            else  if (args.action == FavouriteStatus.UN_FAVOURITE.ordinal)
+                removeFavourite(args.movieID)
         }
         val alertDialog= AlertDialog.Builder(activity)
         alertDialog.setView(dialog)
         return alertDialog.create()
+    }
+
+    private fun removeFavourite(movieID: Int) {
+        lifecycleScope.launchWhenStarted {
+            viewModel.removeFav(movieID)
+            viewModel.removeFavStateFlow.collectLatest {
+                when(it){
+                    is Resource.Error -> {
+                        Log.d(TAG, "removeFavourite: ERROR " + it.data)
+                    }
+                    is Resource.Loading -> {
+                        Log.d(TAG, "removeFavourite: Loading")
+                    }
+                    is Resource.Success -> {
+                        Log.d(TAG, "removeFavourite: SUCCESS " + it.data)
+                        dismiss()
+                        setFragmentResult("setFavourite", bundleOf("action" to false))
+                    }
+                }
+            }
+        }
     }
 
     private fun addFavourite(movieID: Int, movieName: String, movieImage: String){
@@ -54,6 +86,7 @@ class FavouriteDialog: DialogFragment() {
                     }
                     is Resource.Success -> {
                         dismiss()
+                        setFragmentResult("setFavourite", bundleOf("action" to true))
                         Log.d(TAG, "addFavourite: SUCCESS " + it.data)
                     }
                 }

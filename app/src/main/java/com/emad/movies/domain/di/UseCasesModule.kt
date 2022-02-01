@@ -12,6 +12,8 @@ import com.emad.movies.data.usecases.getmoviereviews.GetMovieReviewsUsecaseImpl
 import com.emad.movies.data.usecases.moviedetails.MovieDetailsUsecase
 import com.emad.movies.data.usecases.moviedetails.MovieDetailsUsecaseImpl
 import com.emad.movies.data.usecases.popularmovies.*
+import com.emad.movies.data.usecases.removefav.RemoveFavouriteUsecase
+import com.emad.movies.data.usecases.removefav.RemoveFavouriteUsecaseImpl
 import com.emad.movies.data.usecases.requestrate.RequestRateUsecase
 import com.emad.movies.data.usecases.requestrate.RequestRateUsecaseImpl
 import com.emad.movies.data.usecases.requesttoken.RequestTokenUsecase
@@ -64,4 +66,10 @@ object UseCasesModule {
     @Provides
     fun provideCheckingIfMovieIsFav(moviesRepository: MoviesRepository): CheckMovieUsecase =
         CheckMovieUsecaseImpl(moviesRepository)
+
+    @Singleton
+    @Provides
+    fun provideUnFavourite(moviesRepository: MoviesRepository): RemoveFavouriteUsecase =
+        RemoveFavouriteUsecaseImpl(moviesRepository)
+
 }

@@ -16,6 +16,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.paging.map
 import com.emad.movies.BuildConfig
 import com.emad.movies.R
+import com.emad.movies.data.enums.FavouriteStatus
 import com.emad.movies.data.local.entities.FavouriteEntity
 import com.emad.movies.data.local.entities.MovieEntity
 import com.emad.movies.data.model.PopularMovies
@@ -86,6 +87,6 @@ class MoviesFragment : Fragment(), OnMovieSelected, OnFavouriteSelected {
     }
 
     override fun onFavSelected(favouriteEntity: FavouriteEntity) {
-        findNavController().navigate(MoviesFragmentDirections.actionMoviesFragmentToFavouriteDialog(favouriteEntity.movieID, favouriteEntity.movieName, favouriteEntity.movieImagePath))
+        findNavController().navigate(MoviesFragmentDirections.actionMoviesFragmentToFavouriteDialog(favouriteEntity.movieID, favouriteEntity.movieName, favouriteEntity.movieImagePath, FavouriteStatus.FAVOURITE.ordinal))
     }
 }

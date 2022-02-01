@@ -19,4 +19,7 @@ interface FavouritesDao {
 
     @Query("select Count(*) from favouritestable where movieID =:movieID")
     suspend fun isFav(movieID: Int): Int
+
+    @Query("delete from favouritestable where movieID =:movieID")
+    suspend fun removeFavourite(movieID: Int): Int
 }

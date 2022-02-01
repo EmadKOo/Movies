@@ -53,6 +53,9 @@
             app:argType="string" />
         <argument android:name="movieImage"
             app:argType="string" />
+        <argument
+            android:name="action"
+            app:argType="integer" />
     </dialog>
     <fragment
         android:id="@+id/favouritesFragment"

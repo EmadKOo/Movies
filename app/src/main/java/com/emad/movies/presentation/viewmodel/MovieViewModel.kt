@@ -16,6 +16,7 @@ import com.emad.movies.data.usecases.getallfavs.GetAllFavouritesUsecase
 import com.emad.movies.data.usecases.getmoviereviews.GetMovieReviewsUsecase
 import com.emad.movies.data.usecases.moviedetails.MovieDetailsUsecase
 import com.emad.movies.data.usecases.popularmovies.PopularMoviesUseCase
+import com.emad.movies.data.usecases.removefav.RemoveFavouriteUsecase
 import com.emad.movies.data.usecases.requestrate.RequestRateUsecase
 import com.emad.movies.data.usecases.requesttoken.RequestTokenUsecase
 import com.emad.movies.utils.Resource
@@ -37,6 +38,7 @@ class MovieViewModel @Inject constructor(
     private val addFavouriteUsecase: AddFavouriteUsecase,
     private val getAllFavouritesUsecase: GetAllFavouritesUsecase,
     private val checkMovieUsecase: CheckMovieUsecase,
+    private val removeFavouritesUsecase: RemoveFavouriteUsecase
 ) : ViewModel() {
     private val _movieDetailsStateFlow = MutableStateFlow<Resource<DetailsEntity>>(Resource.Init())
     val movieDetailsStateFlow: StateFlow<Resource<DetailsEntity>> = _movieDetailsStateFlow
@@ -59,8 +61,9 @@ class MovieViewModel @Inject constructor(
     private val _checkIfMovieIsFavStateFlow = MutableStateFlow<Resource<Int>>(Resource.Init())
     val checkIfMovieIsFavStateFlow: StateFlow<Resource<Int>> = _checkIfMovieIsFavStateFlow
 
-    private val _addMoviesStateFlow= MutableStateFlow<Resource<Array<Long>>>(Resource.Init())
-    val addMoviesStateFlow: StateFlow<Resource<Array<Long>>> = _addMoviesStateFlow
+    private val _removeFavStateFlow = MutableStateFlow<Resource<Int>>(Resource.Init())
+    val removeFavStateFlow: StateFlow<Resource<Int>> = _removeFavStateFlow
+
 
     val moviesFlow = popularMoviesUseCase.invoke()
 
@@ -124,6 +127,15 @@ class MovieViewModel @Inject constructor(
             _checkIfMovieIsFavStateFlow.emit(Resource.Success(checkMovieUsecase.invoke(movieID)))
         }catch (ex: Exception){
             _checkIfMovieIsFavStateFlow.emit(Resource.Error(ex.localizedMessage))
+        }
+    }
+
+    fun removeFav(movieID: Int)= viewModelScope.launch {
+        try {
+            _removeFavStateFlow.emit(Resource.Loading())
+            _removeFavStateFlow.emit(Resource.Success(removeFavouritesUsecase.invoke(movieID)))
+        }catch (ex: Exception){
+            _removeFavStateFlow.emit(Resource.Error(ex.localizedMessage))
         }
     }
     companion object{
