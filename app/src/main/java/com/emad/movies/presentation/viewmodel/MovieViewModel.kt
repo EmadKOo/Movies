@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
+import com.emad.movies.data.local.entities.DetailsEntity
 import com.emad.movies.data.local.entities.FavouriteEntity
 import com.emad.movies.data.local.entities.MovieEntity
 import com.emad.movies.data.model.*
@@ -36,8 +37,8 @@ class MovieViewModel @Inject constructor(
     private val getAllFavouritesUsecase: GetAllFavouritesUsecase,
     private val checkMovieUsecase: CheckMovieUsecase,
 ) : ViewModel() {
-    private val _movieDetailsStateFlow = MutableStateFlow<Resource<MovieDetails>>(Resource.Init())
-    val movieDetailsStateFlow: StateFlow<Resource<MovieDetails>> = _movieDetailsStateFlow
+    private val _movieDetailsStateFlow = MutableStateFlow<Resource<DetailsEntity>>(Resource.Init())
+    val movieDetailsStateFlow: StateFlow<Resource<DetailsEntity>> = _movieDetailsStateFlow
 
     private val _getMovieReviewsStateFlow= MutableStateFlow<Resource<MovieReviews>>(Resource.Init())
     val getMovieReviewsStateFlow: StateFlow<Resource<MovieReviews>> = _getMovieReviewsStateFlow

@@ -4,15 +4,17 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.liveData
 import com.emad.movies.data.MoviePagingSource
+import com.emad.movies.data.local.dao.DetailsDao
 import com.emad.movies.data.local.dao.FavouritesDao
 import com.emad.movies.data.local.dao.MovieDao
+import com.emad.movies.data.local.entities.DetailsEntity
 import com.emad.movies.data.local.entities.FavouriteEntity
 import com.emad.movies.data.local.entities.MovieEntity
 import com.emad.movies.data.model.RequestRate
 import com.emad.movies.data.remote.ApiService
 import javax.inject.Inject
 
-class MoviesRepository @Inject constructor(private val apiService: ApiService, private val favouritesDao: FavouritesDao, private val moviesDao: MovieDao) {
+class MoviesRepository @Inject constructor(private val apiService: ApiService, private val favouritesDao: FavouritesDao, private val moviesDao: MovieDao, private val detailsDao: DetailsDao) {
 
      fun getPopularMovies()= Pager(
         config = PagingConfig(
@@ -23,7 +25,18 @@ class MoviesRepository @Inject constructor(private val apiService: ApiService, p
         pagingSourceFactory = {MoviePagingSource(apiService, moviesDao)}
     ).flow
 
-    suspend fun getMovieDetails(movie_id: Int)= apiService.getMovieDetails(movie_id = movie_id)
+    suspend fun getMovieDetails(movie_id: Int): DetailsEntity{
+        try {
+            val response= apiService.getMovieDetails(movie_id = movie_id)
+            detailsDao.addDetails(DetailsEntity(movieID= response.id, movieName = response.title, movieImagePath = response.poster_path, movieDescription = response.overview, movieReleaseDate = response.release_date, movieVotes = response.vote_average, moviePopularity = response.popularity))
+            return detailsDao.getDetails(movie_id)
+        }catch (ex: Exception){
+            val cachedDetailsInfo = detailsDao.getDetails(movie_id)
+            if (cachedDetailsInfo != null)
+                return detailsDao.getDetails(movie_id)
+            return DetailsEntity(0, "", "", "", "", 0.0,0.0)
+        }
+    }
     suspend fun getMovieReviews(movie_id: Int)= apiService.getMovieReviews(movie_id = movie_id)
     suspend fun requestNewToken()= apiService.requestNewToken()
     suspend fun addRate(movie_id: Int, session_id: String, requestRate: RequestRate)= apiService.postRate(movie_id = movie_id, session_id = session_id, requestRate = requestRate)

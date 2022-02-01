@@ -18,6 +18,7 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.emad.movies.BuildConfig
 import com.emad.movies.R
+import com.emad.movies.data.local.entities.DetailsEntity
 import com.emad.movies.data.model.MovieDetails
 import com.emad.movies.data.model.RequestRate
 import com.emad.movies.databinding.FragmentDetailsBinding
@@ -39,7 +40,7 @@ class DetailsFragment : Fragment() {
     val args: DetailsFragmentArgs by navArgs()
     @Inject
     lateinit var adapter: ReviewsAdapter
-    lateinit var movieDetail: MovieDetails
+    lateinit var movieDetail: DetailsEntity
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -73,7 +74,7 @@ class DetailsFragment : Fragment() {
 
     private fun handleViews(){
         mBinding.favIcon.setOnClickListener {
-            findNavController().navigate(DetailsFragmentDirections.actionDetailsFragmentToFavouriteDialog(args.movieID, movieDetail?.original_title, "${BuildConfig.IMAGE_BASE}${movieDetail.poster_path}"))
+            findNavController().navigate(DetailsFragmentDirections.actionDetailsFragmentToFavouriteDialog(args.movieID, movieDetail?.movieName, "${BuildConfig.IMAGE_BASE}${movieDetail.movieImagePath}"))
         }
     }
     private fun loadMovieDetails(movieID: Int) {
@@ -177,12 +178,12 @@ class DetailsFragment : Fragment() {
         return inputStream
     }
 
-    private fun bindingDetails(movieDetails: MovieDetails) {
+    private fun bindingDetails(movieDetails: DetailsEntity) {
 //        Picasso.get().load("${BuildConfig.IMAGE_BASE}${movieDetails.poster_path}")
 //            .into(mBinding.movieImageView)
         Glide.with(requireContext())
             .asBitmap()
-            .load("${BuildConfig.IMAGE_BASE}${movieDetails.poster_path}")
+            .load("${BuildConfig.IMAGE_BASE}${movieDetails.movieImagePath}")
             .centerCrop()
             .fitCenter()
             .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -194,11 +195,11 @@ class DetailsFragment : Fragment() {
                     mBinding.movieImageView.setImageDrawable(placeholder)
                 }
             })
-        mBinding.movieDescription.setText(movieDetails.overview)
-        mBinding.popularityVotes.setText(movieDetails.popularity.toString())
-        mBinding.movieVotes.setText(movieDetails.vote_average.toString())
-        mBinding.movieReleaseDate.setText(movieDetails.release_date)
-        mBinding.movieNameTV.setText(movieDetails.original_title)
+        mBinding.movieDescription.setText(movieDetails.movieDescription)
+        mBinding.popularityVotes.setText(movieDetails.moviePopularity.toString())
+        mBinding.movieVotes.setText(movieDetails.movieVotes.toString())
+        mBinding.movieReleaseDate.setText(movieDetails.movieReleaseDate)
+        mBinding.movieNameTV.setText(movieDetails.movieName)
     }
 
     companion object {

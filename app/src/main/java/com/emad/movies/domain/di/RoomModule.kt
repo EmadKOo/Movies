@@ -2,6 +2,7 @@ package com.emad.movies.domain.di
 
 import android.app.Application
 import androidx.room.Room
+import com.emad.movies.data.local.dao.DetailsDao
 import com.emad.movies.data.local.dao.FavouritesDao
 import com.emad.movies.data.local.dao.MovieDao
 import com.emad.movies.data.local.database.MovieDatabase
@@ -34,5 +35,11 @@ object RoomModule {
     @Singleton
     fun providesMoviesDao(db: MovieDatabase): MovieDao {
         return db.movieDao()
+    }
+
+    @Provides
+    @Singleton
+    fun providesDetailsDao(db: MovieDatabase): DetailsDao {
+        return db.movieDetails()
     }
 }
