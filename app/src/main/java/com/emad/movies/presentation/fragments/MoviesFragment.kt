@@ -6,6 +6,8 @@ import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -53,6 +55,7 @@ class MoviesFragment : Fragment(), OnMovieSelected {
         lifecycleScope.launchWhenStarted {
             moviesViewModel.moviesFlow.collectLatest {
                 adapter.submitData(viewLifecycleOwner.lifecycle, it)
+                mBinding.moviesProgressBar.visibility= GONE
             }
         }
     }
@@ -61,6 +64,10 @@ class MoviesFragment : Fragment(), OnMovieSelected {
         mBinding.moviesRecyclerView.adapter= adapter
         mBinding.favIcon.setOnClickListener {
             findNavController().navigate(MoviesFragmentDirections.actionMoviesFragmentToFavouritesFragment())
+        }
+        mBinding.refreshIcon.setOnClickListener {
+            mBinding.moviesProgressBar.visibility= VISIBLE
+            loadPopularMovies()
         }
     }
 
