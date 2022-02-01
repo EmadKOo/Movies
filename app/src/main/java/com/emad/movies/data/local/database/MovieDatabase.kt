@@ -14,7 +14,7 @@ import com.emad.movies.data.local.entities.ReviewEntity
 
 @Database(
     entities = [FavouriteEntity::class, MovieEntity::class, DetailsEntity::class, ReviewEntity::class],
-    version = 3,
+    version = 4,
     exportSchema = false
 )
 @TypeConverters(MovieConverter::class)

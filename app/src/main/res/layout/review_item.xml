@@ -6,7 +6,7 @@
     <data>
         <variable
             name="review"
-            type="com.emad.movies.data.model.MovieReviews.Result" />
+            type="com.emad.movies.data.local.entities.ReviewEntity" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -23,7 +23,7 @@
             android:textStyle="bold"
             android:textColor="@color/black"
             android:textSize="@dimen/_12sdp"
-            android:text="@{review.author}"
+            android:text="@{review.authorName}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -36,7 +36,7 @@
             android:layout_marginStart="@dimen/_20sdp"
             android:layout_marginTop="@dimen/_2sdp"
             android:fontFamily="@font/cairo"
-            android:text="@{review.content}"
+            android:text="@{review.reviewContent}"
             android:textColor="@color/black"
             android:textSize="@dimen/_12sdp"
             app:layout_constraintEnd_toEndOf="parent"

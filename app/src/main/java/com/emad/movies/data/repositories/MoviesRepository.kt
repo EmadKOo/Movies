@@ -7,14 +7,16 @@ import com.emad.movies.data.MoviePagingSource
 import com.emad.movies.data.local.dao.DetailsDao
 import com.emad.movies.data.local.dao.FavouritesDao
 import com.emad.movies.data.local.dao.MovieDao
+import com.emad.movies.data.local.dao.ReviewsDao
 import com.emad.movies.data.local.entities.DetailsEntity
 import com.emad.movies.data.local.entities.FavouriteEntity
 import com.emad.movies.data.local.entities.MovieEntity
+import com.emad.movies.data.local.entities.ReviewEntity
 import com.emad.movies.data.model.RequestRate
 import com.emad.movies.data.remote.ApiService
 import javax.inject.Inject
 
-class MoviesRepository @Inject constructor(private val apiService: ApiService, private val favouritesDao: FavouritesDao, private val moviesDao: MovieDao, private val detailsDao: DetailsDao) {
+class MoviesRepository @Inject constructor(private val apiService: ApiService, private val favouritesDao: FavouritesDao, private val moviesDao: MovieDao, private val detailsDao: DetailsDao, private val reviewsDao: ReviewsDao) {
 
      fun getPopularMovies()= Pager(
         config = PagingConfig(
@@ -33,11 +35,25 @@ class MoviesRepository @Inject constructor(private val apiService: ApiService, p
         }catch (ex: Exception){
             val cachedDetailsInfo = detailsDao.getDetails(movie_id)
             if (cachedDetailsInfo != null)
-                return detailsDao.getDetails(movie_id)
+                return cachedDetailsInfo
             return DetailsEntity(0, "", "", "", "", 0.0,0.0)
         }
     }
-    suspend fun getMovieReviews(movie_id: Int)= apiService.getMovieReviews(movie_id = movie_id)
+    suspend fun getMovieReviews(movie_id: Int): List<ReviewEntity>{
+        try {
+            val response= apiService.getMovieReviews(movie_id = movie_id)
+            val reviewsEntitys= response.results.map {
+                ReviewEntity(movie_id, reviewID = it.id, authorName = it.author, reviewContent = it.content)
+            }
+            reviewsDao.addReviews(reviewsEntitys)
+            return reviewsDao.getReviews(movie_id)
+        }catch (ex: Exception){
+            val cachedReviews= reviewsDao.getReviews(movie_id)
+            if (cachedReviews != null)
+                return cachedReviews
+            return arrayListOf<ReviewEntity>()
+        }
+    }
     suspend fun requestNewToken()= apiService.requestNewToken()
     suspend fun addRate(movie_id: Int, session_id: String, requestRate: RequestRate)= apiService.postRate(movie_id = movie_id, session_id = session_id, requestRate = requestRate)
 

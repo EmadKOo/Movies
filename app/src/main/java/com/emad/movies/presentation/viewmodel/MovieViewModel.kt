@@ -7,6 +7,7 @@ import androidx.paging.PagingData
 import com.emad.movies.data.local.entities.DetailsEntity
 import com.emad.movies.data.local.entities.FavouriteEntity
 import com.emad.movies.data.local.entities.MovieEntity
+import com.emad.movies.data.local.entities.ReviewEntity
 import com.emad.movies.data.model.*
 import com.emad.movies.data.repositories.MoviesRepository
 import com.emad.movies.data.usecases.addfavourite.AddFavouriteUsecase
@@ -40,8 +41,8 @@ class MovieViewModel @Inject constructor(
     private val _movieDetailsStateFlow = MutableStateFlow<Resource<DetailsEntity>>(Resource.Init())
     val movieDetailsStateFlow: StateFlow<Resource<DetailsEntity>> = _movieDetailsStateFlow
 
-    private val _getMovieReviewsStateFlow= MutableStateFlow<Resource<MovieReviews>>(Resource.Init())
-    val getMovieReviewsStateFlow: StateFlow<Resource<MovieReviews>> = _getMovieReviewsStateFlow
+    private val _getMovieReviewsStateFlow= MutableStateFlow<Resource<List<ReviewEntity>>>(Resource.Init())
+    val getMovieReviewsStateFlow: StateFlow<Resource<List<ReviewEntity>>> = _getMovieReviewsStateFlow
 
     private val _requestTokenStateFlow = MutableStateFlow<Resource<Token>>(Resource.Init())
     val requestTokenStateFlow: StateFlow<Resource<Token>> = _requestTokenStateFlow

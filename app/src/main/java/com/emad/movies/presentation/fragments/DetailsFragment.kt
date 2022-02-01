@@ -110,10 +110,10 @@ class DetailsFragment : Fragment() {
                     }
                     is Resource.Success -> {
                         Log.d(TAG, "loadMovieReviews: SUCCESS " + it.data)
-                        if (it.data?.results?.size!!>0) {
+                        if (it.data?.size !!>0) {
                             mBinding.reviewsRecyclerView.adapter = adapter
                             mBinding.reviewsRecyclerView.visibility= View.VISIBLE
-                            adapter.submitList(it.data!!.results)
+                            adapter.submitList(it.data)
                         }else{
                             Log.d(TAG, "loadMovieReviews: ELSES ")
                             mBinding.reviewsTV.setText(getString(R.string.noReviews))

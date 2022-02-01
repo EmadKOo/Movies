@@ -3,16 +3,17 @@ package com.emad.movies.presentation.adapters
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.emad.movies.data.local.entities.ReviewEntity
 import com.emad.movies.data.model.MovieReviews
 import com.emad.movies.databinding.ReviewItemBinding
 import javax.inject.Inject
 
 class ReviewsAdapter @Inject constructor(): RecyclerView.Adapter<ReviewsAdapter.MyViewHolder>() {
-    val list = ArrayList<MovieReviews.Result>()
+    val list = ArrayList<ReviewEntity>()
 
     open class MyViewHolder(private val mBinding: ReviewItemBinding) :
         RecyclerView.ViewHolder(mBinding.root) {
-        fun bind(review: MovieReviews.Result) {
+        fun bind(review: ReviewEntity) {
             mBinding.review= review
         }
     }
@@ -33,7 +34,7 @@ class ReviewsAdapter @Inject constructor(): RecyclerView.Adapter<ReviewsAdapter.
 
     override fun getItemCount(): Int = list.size
 
-    fun submitList(newList: ArrayList<MovieReviews.Result>){
+    fun submitList(newList: List<ReviewEntity>){
         list.clear()
         list.addAll(newList)
         notifyDataSetChanged()

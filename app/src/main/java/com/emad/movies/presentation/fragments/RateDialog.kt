@@ -48,6 +48,7 @@ class RateDialog: DialogFragment() {
                 when(it){
                     is Resource.Error -> {
                         Log.d(TAG, "requestMovieRate: ERROR " + it.data)
+                        dismiss()
                     }
                     is Resource.Loading -> {
                         Log.d(TAG, "requestMovieRate: Loading")

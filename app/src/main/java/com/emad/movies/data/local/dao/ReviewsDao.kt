@@ -12,8 +12,8 @@ interface ReviewsDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addReviews(reviews: List<ReviewEntity>): Array<Long>
 
-    @Query("select * from reviewstable where reviewID =:reviewID and movieID =:movieID")
-    suspend fun getReviews(reviewID: Int, movieID: Int): List<ReviewEntity>
+    @Query("select * from reviewstable where movieID =:movieID")
+    suspend fun getReviews(movieID: Int): List<ReviewEntity>
 
     @Query("DELETE from reviewstable")
     suspend fun clearDB()

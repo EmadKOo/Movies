@@ -15,7 +15,7 @@ import kotlinx.android.parcel.Parcelize
 data class ReviewEntity(
     @PrimaryKey
     val movieID: Int,
-    val reviewID: Int,
+    val reviewID: String,
     val authorName: String,
     val reviewContent: String
 ) : Parcelable
