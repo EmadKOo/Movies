@@ -5,12 +5,14 @@ import androidx.paging.PagingConfig
 import androidx.paging.liveData
 import com.emad.movies.data.MoviePagingSource
 import com.emad.movies.data.local.dao.FavouritesDao
+import com.emad.movies.data.local.dao.MovieDao
 import com.emad.movies.data.local.entities.FavouriteEntity
+import com.emad.movies.data.local.entities.MovieEntity
 import com.emad.movies.data.model.RequestRate
 import com.emad.movies.data.remote.ApiService
 import javax.inject.Inject
 
-class MoviesRepository @Inject constructor(private val apiService: ApiService, private val favouritesDao: FavouritesDao) {
+class MoviesRepository @Inject constructor(private val apiService: ApiService, private val favouritesDao: FavouritesDao, private val moviesDao: MovieDao) {
 
      fun getPopularMovies()= Pager(
         config = PagingConfig(
@@ -18,7 +20,7 @@ class MoviesRepository @Inject constructor(private val apiService: ApiService, p
             maxSize = 20,
             enablePlaceholders = false
         ),
-        pagingSourceFactory = {MoviePagingSource(apiService)}
+        pagingSourceFactory = {MoviePagingSource(apiService, moviesDao)}
     ).flow
 
     suspend fun getMovieDetails(movie_id: Int)= apiService.getMovieDetails(movie_id = movie_id)
@@ -29,4 +31,6 @@ class MoviesRepository @Inject constructor(private val apiService: ApiService, p
     suspend fun addFavourite(favouriteEntity: FavouriteEntity)= favouritesDao.addFavourite(favouriteEntity)
     suspend fun getAllFavourites()= favouritesDao.getFavourites()
     suspend fun isMovieFav(movieID: Int)= favouritesDao.isFav(movieID)
+
+    suspend fun addMovies(movieEntitys: List<MovieEntity>)= moviesDao.addMovies(movieEntitys)
 }

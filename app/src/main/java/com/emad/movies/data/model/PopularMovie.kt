@@ -2,12 +2,14 @@ package com.emad.movies.data.model
 
 import android.os.Parcelable
 import androidx.annotation.Keep
+import androidx.room.Embedded
 import kotlinx.android.parcel.Parcelize
 
 @Keep
 @Parcelize
 data class PopularMovies(
     val page: Int,
+    @Embedded
     val results: List<Result>,
     val total_pages: Int,
     val total_results: Int,

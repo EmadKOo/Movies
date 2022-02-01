@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import com.emad.movies.data.local.entities.FavouriteEntity
+import com.emad.movies.data.local.entities.MovieEntity
 import com.emad.movies.data.model.*
 import com.emad.movies.data.repositories.MoviesRepository
 import com.emad.movies.data.usecases.addfavourite.AddFavouriteUsecase
@@ -33,7 +34,7 @@ class MovieViewModel @Inject constructor(
     private val requestRateUsecase: RequestRateUsecase,
     private val addFavouriteUsecase: AddFavouriteUsecase,
     private val getAllFavouritesUsecase: GetAllFavouritesUsecase,
-    private val checkMovieUsecase: CheckMovieUsecase
+    private val checkMovieUsecase: CheckMovieUsecase,
 ) : ViewModel() {
     private val _movieDetailsStateFlow = MutableStateFlow<Resource<MovieDetails>>(Resource.Init())
     val movieDetailsStateFlow: StateFlow<Resource<MovieDetails>> = _movieDetailsStateFlow
@@ -55,6 +56,9 @@ class MovieViewModel @Inject constructor(
 
     private val _checkIfMovieIsFavStateFlow = MutableStateFlow<Resource<Int>>(Resource.Init())
     val checkIfMovieIsFavStateFlow: StateFlow<Resource<Int>> = _checkIfMovieIsFavStateFlow
+
+    private val _addMoviesStateFlow= MutableStateFlow<Resource<Array<Long>>>(Resource.Init())
+    val addMoviesStateFlow: StateFlow<Resource<Array<Long>>> = _addMoviesStateFlow
 
     val moviesFlow = popularMoviesUseCase.invoke()
 

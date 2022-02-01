@@ -14,20 +14,21 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.emad.movies.BuildConfig
+import com.emad.movies.data.local.entities.MovieEntity
 import com.emad.movies.data.model.PopularMovies
 import com.emad.movies.databinding.MovieItemBinding
 import com.emad.movies.domain.listeners.OnMovieSelected
 import com.squareup.picasso.Picasso
 import dagger.hilt.android.qualifiers.ApplicationContext
 
-class MovieAdapter(private val onMovieSelected: OnMovieSelected, private val context: Context): PagingDataAdapter<PopularMovies.Result , MovieAdapter.MyViewHolder>(DIFFUTIL) {
+class MovieAdapter(private val onMovieSelected: OnMovieSelected, private val context: Context): PagingDataAdapter<MovieEntity , MovieAdapter.MyViewHolder>(DIFFUTIL) {
 
     inner class MyViewHolder(private val mBinding: MovieItemBinding): RecyclerView.ViewHolder(mBinding.root){
-        fun bind(movie: PopularMovies.Result){
+        fun bind(movie: MovieEntity){
             //Picasso.get().load("${BuildConfig.IMAGE_BASE}${movie.poster_path}").into(mBinding.movieBosterIV)
             Glide.with(context)
                 .asBitmap()
-                .load("${BuildConfig.IMAGE_BASE}${movie.poster_path}")
+                .load("${BuildConfig.IMAGE_BASE}${movie.movieImagePath}")
                 .centerCrop()
                 .fitCenter()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -39,7 +40,7 @@ class MovieAdapter(private val onMovieSelected: OnMovieSelected, private val con
                         mBinding.movieBosterIV.setImageDrawable(placeholder)
                     }
                 })
-            mBinding.movieNameTV.setText(movie.title)
+            mBinding.movieNameTV.setText(movie.movieName)
             mBinding.movieViewHolder.setOnClickListener {
                 onMovieSelected.movieSelected(movie)
             }
@@ -58,17 +59,17 @@ class MovieAdapter(private val onMovieSelected: OnMovieSelected, private val con
     }
 
     companion object{
-        private val DIFFUTIL = object : DiffUtil.ItemCallback<PopularMovies.Result>(){
+        private val DIFFUTIL = object : DiffUtil.ItemCallback<MovieEntity>(){
             override fun areItemsTheSame(
-                oldItem: PopularMovies.Result,
-                newItem: PopularMovies.Result,
+                oldItem: MovieEntity,
+                newItem: MovieEntity,
             ): Boolean {
-                return oldItem.id == newItem.id
+                return oldItem.movieID == newItem.movieID
             }
 
             override fun areContentsTheSame(
-                oldItem: PopularMovies.Result,
-                newItem: PopularMovies.Result,
+                oldItem: MovieEntity,
+                newItem: MovieEntity,
             ): Boolean {
                 return oldItem == newItem
             }

@@ -64,5 +64,4 @@ object UseCasesModule {
     @Provides
     fun provideCheckingIfMovieIsFav(moviesRepository: MoviesRepository): CheckMovieUsecase =
         CheckMovieUsecaseImpl(moviesRepository)
-
 }

@@ -10,7 +10,7 @@ import com.emad.movies.data.local.entities.MovieEntity
 
 @Database(
     entities = [FavouriteEntity::class, MovieEntity::class],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 @TypeConverters(MovieConverter::class)
