@@ -14,17 +14,24 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.emad.movies.BuildConfig
+import com.emad.movies.data.local.entities.FavouriteEntity
 import com.emad.movies.data.local.entities.MovieEntity
 import com.emad.movies.data.model.PopularMovies
 import com.emad.movies.databinding.MovieItemBinding
+import com.emad.movies.domain.listeners.OnFavouriteSelected
 import com.emad.movies.domain.listeners.OnMovieSelected
 import com.squareup.picasso.Picasso
 import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 
-class MovieAdapter(private val onMovieSelected: OnMovieSelected, private val context: Context): PagingDataAdapter<MovieEntity , MovieAdapter.MyViewHolder>(DIFFUTIL) {
+class MovieAdapter @Inject constructor(@ApplicationContext private val context: Context) :
+    PagingDataAdapter<MovieEntity, MovieAdapter.MyViewHolder>(DIFFUTIL) {
+    lateinit var onMovieSelected: OnMovieSelected
+    lateinit var onFavouriteSelected: OnFavouriteSelected
 
-    inner class MyViewHolder(private val mBinding: MovieItemBinding): RecyclerView.ViewHolder(mBinding.root){
-        fun bind(movie: MovieEntity){
+    inner class MyViewHolder(private val mBinding: MovieItemBinding) :
+        RecyclerView.ViewHolder(mBinding.root) {
+        fun bind(movie: MovieEntity) {
             //Picasso.get().load("${BuildConfig.IMAGE_BASE}${movie.poster_path}").into(mBinding.movieBosterIV)
             Glide.with(context)
                 .asBitmap()
@@ -32,10 +39,14 @@ class MovieAdapter(private val onMovieSelected: OnMovieSelected, private val con
                 .centerCrop()
                 .fitCenter()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(object : CustomTarget<Bitmap>(){
-                    override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                .into(object : CustomTarget<Bitmap>() {
+                    override fun onResourceReady(
+                        resource: Bitmap,
+                        transition: Transition<in Bitmap>?,
+                    ) {
                         mBinding.movieBosterIV.setImageBitmap(resource)
                     }
+
                     override fun onLoadCleared(placeholder: Drawable?) {
                         mBinding.movieBosterIV.setImageDrawable(placeholder)
                     }
@@ -44,22 +55,26 @@ class MovieAdapter(private val onMovieSelected: OnMovieSelected, private val con
             mBinding.movieViewHolder.setOnClickListener {
                 onMovieSelected.movieSelected(movie)
             }
+
+            mBinding.favIcon.setOnClickListener {
+                onFavouriteSelected.onFavSelected(FavouriteEntity(movie.movieID, movie.movieName, movie.movieImagePath))
+            }
         }
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        val currentItem= getItem(position)
+        val currentItem = getItem(position)
         if (currentItem != null)
             holder.bind(currentItem)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        val mBinding= MovieItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val mBinding = MovieItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return MyViewHolder(mBinding)
     }
 
-    companion object{
-        private val DIFFUTIL = object : DiffUtil.ItemCallback<MovieEntity>(){
+    companion object {
+        private val DIFFUTIL = object : DiffUtil.ItemCallback<MovieEntity>() {
             override fun areItemsTheSame(
                 oldItem: MovieEntity,
                 newItem: MovieEntity,
@@ -74,5 +89,14 @@ class MovieAdapter(private val onMovieSelected: OnMovieSelected, private val con
                 return oldItem == newItem
             }
         }
+    }
+
+
+    fun submitMovieListener( onMovieSelected: OnMovieSelected){
+        this.onMovieSelected= onMovieSelected
+    }
+
+    fun submitFavListener( onFavouriteSelected: OnFavouriteSelected){
+        this.onFavouriteSelected= onFavouriteSelected
     }
 }

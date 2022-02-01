@@ -9,15 +9,18 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.map
 import com.emad.movies.BuildConfig
 import com.emad.movies.R
+import com.emad.movies.data.local.entities.FavouriteEntity
 import com.emad.movies.data.local.entities.MovieEntity
 import com.emad.movies.data.model.PopularMovies
 import com.emad.movies.databinding.FragmentMoviesBinding
+import com.emad.movies.domain.listeners.OnFavouriteSelected
 import com.emad.movies.domain.listeners.OnMovieSelected
 import com.emad.movies.presentation.adapters.MovieAdapter
 import com.emad.movies.presentation.viewmodel.MovieViewModel
@@ -26,16 +29,19 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
+import javax.inject.Inject
 
 @AndroidEntryPoint
-class MoviesFragment : Fragment(), OnMovieSelected {
+class MoviesFragment : Fragment(), OnMovieSelected, OnFavouriteSelected {
     private lateinit var mBinding: FragmentMoviesBinding
     val moviesViewModel: MovieViewModel by viewModels()
+    @Inject
     lateinit var adapter: MovieAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        adapter= MovieAdapter(this, requireContext())
+        adapter.submitFavListener(this)
+        adapter.submitMovieListener(this)
     }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -77,5 +83,9 @@ class MoviesFragment : Fragment(), OnMovieSelected {
 
     override fun movieSelected(movie: MovieEntity) {
         findNavController().navigate(MoviesFragmentDirections.actionMoviesFragmentToDetailsFragment(movie.movieID))
+    }
+
+    override fun onFavSelected(favouriteEntity: FavouriteEntity) {
+        findNavController().navigate(MoviesFragmentDirections.actionMoviesFragmentToFavouriteDialog(favouriteEntity.movieID, favouriteEntity.movieName, favouriteEntity.movieImagePath))
     }
 }
