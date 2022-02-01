@@ -5,6 +5,7 @@ import androidx.room.Room
 import com.emad.movies.data.local.dao.DetailsDao
 import com.emad.movies.data.local.dao.FavouritesDao
 import com.emad.movies.data.local.dao.MovieDao
+import com.emad.movies.data.local.dao.ReviewsDao
 import com.emad.movies.data.local.database.MovieDatabase
 import com.emad.movies.utils.Constants.Companion.MOVIE_DB
 import dagger.Module
@@ -41,5 +42,11 @@ object RoomModule {
     @Singleton
     fun providesDetailsDao(db: MovieDatabase): DetailsDao {
         return db.movieDetails()
+    }
+
+    @Provides
+    @Singleton
+    fun providesReviewsDao(db: MovieDatabase): ReviewsDao {
+        return db.reviewsDao()
     }
 }

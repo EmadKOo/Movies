@@ -6,6 +6,7 @@ class Constants {
         const val  FAVOURITES_TABLE: String ="favouritestable"
         const val  MOVIES_TABLE: String ="moviestable"
         const val  DETAILS_TABLE: String ="detailstable"
+        const val  REVIEW_TABLE: String ="reviewstable"
 
     }
 }
