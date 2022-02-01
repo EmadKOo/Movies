@@ -7,6 +7,8 @@ import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -70,6 +72,10 @@ class DetailsFragment : Fragment() {
         mBinding.rateImageView.setOnClickListener {
             findNavController().navigate(DetailsFragmentDirections.actionDetailsFragmentToRateDialog(args.movieID))
         }
+        mBinding.refreshIcon.setOnClickListener {
+            loadMovieDetails(args.movieID)
+            loadMovieReviews(args.movieID)
+        }
     }
 
     private fun handleViews(){
@@ -84,11 +90,14 @@ class DetailsFragment : Fragment() {
                 when (it) {
                     is Resource.Error -> {
                         Log.d(TAG, "loadMovieDetails: ERROR " + it.data)
+                        mBinding.detailsProgressBar.visibility= GONE
                     }
                     is Resource.Loading -> {
                         Log.d(TAG, "loadMovieDetails: Loading ")
+                        mBinding.detailsProgressBar.visibility= VISIBLE
                     }
                     is Resource.Success -> {
+                        mBinding.detailsProgressBar.visibility= GONE
                         movieDetail= it.data!!
                         bindingDetails(it.data)
                     }
